@@ -1,6 +1,7 @@
-import React from 'react'
+// import React from 'react'
 import './Auth.css'
 import Logo from '../../img/logo.png'
+import React, { useState } from "react";
 
 const Auth = () => {
   return (
@@ -42,32 +43,92 @@ const Auth = () => {
    </div>
   )
 }
-function Signup(){
-    return(
+const Signup = () => {
+    const [user, setUser] = useState([
+      {
+        firstname: "",
+        lastname:"",
+        username: "",
+       password: "",
+       confirmpassword:"",
+      },
+    ]);
+  
+    let Nme, Val;
+    const getUserData = (e) => {
+      Nme = e.target.name;
+      Val = e.target.value;
+      setUser({ ...user, [Nme]: Val });
+      console.log(Val)
+    };
+  
+    const postDataonFirebase = async (e) => {
+      e.preventDefault();
+      const resp = await fetch(
+        "https://contact-313fe-default-rtdb.firebaseio.com/palpal.json",
+        {
+          method: "POST",
+          header: {"Content-Type" : "application/json"},
+          body: JSON.stringify({
+            firstname: user.firstname,
+            lastname:user.lastname,
+            username: user.username,
+           password: user.password,
+           confirmpassword:user.confirmpassword,
+          }), 
+        }
+      );
+      
+      if (resp) {
+        setUser({
+            firstname: "",
+            lastname:"",
+            username: "",
+           password: "",
+           confirmpassword:"",
+        });
+        alert("Thankyou So much");
+      }
+      
+    };
+ return(
         <div className="a-right">
-            <form  className="infoForm authForm">
+            <form  className="infoForm authForm" action="" onSubmit={postDataonFirebase}>
 
                 <h3>Signup wa!!!</h3>
                 <div>
                     <input type="text" 
                     placeholder="First Name"
                     className="InfoInput"
-                    name="firstname"/>
+                    name="firstname"
+                    value={user.firstname}
+                    onChange={getUserData}
+                    />
+
+                    </div>
+                    <div>
                      <input type="text" 
                     placeholder="Last Name"
                     className="InfoInput"
-                    name="lastname"/>
+                    name="lastname"
+                    value={user.lastname}
+                    onChange={getUserData}
+                    />
                 </div>
                 <div>
                     <input type="text" className="infoInput" 
-                    name="username" placeholder="UserName"/>
+                    name="username" placeholder="UserName"  value={user.username} onChange={getUserData}/>
 
                 </div>
                 <div>
                     <input type="text" className="infoInput" 
-                    name="password" placeholder="Password"/>
+                    name="password" placeholder="Password"  value={user.password} onChange={getUserData}/>
+
+
+</div>
+                    <div>
                     <input type="text" className="infoInput" 
-                    name="confirmpassword" placeholder="Confirm Password"/>
+                    name="confirmpassword" placeholder="Confirm Password"  value={user.confirmpassword} onChange={getUserData}/>
 
                     
                 </div>
